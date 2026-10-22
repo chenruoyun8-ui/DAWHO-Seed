@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>大戶小芽 DAWHO Seed App</title>
+<style>
+:root{box-sizing:border-box;--bg:#DCE6DD;--g:#1F7A44;--gd:#12261C;--r:#C0392B;--mute:#4F6257;--line:#E1E9E0;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B130E;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B130E;color-scheme:dark}
+html,body{height:100%}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:'PingFang TC','Noto Sans TC','Microsoft JhengHei',sans-serif;display:flex;justify-content:center;align-items:center}
+.app{position:relative;width:100%;max-width:420px;height:100%;max-height:860px;background:#F2F6F1;color:var(--gd);display:flex;flex-direction:column;overflow:hidden;padding-top:env(safe-area-inset-top,0px)}
+@media (min-width:480px){.app{border-radius:36px;height:min(100%,860px);box-shadow:0 20px 60px rgba(0,0,0,.25)}}
+header{display:flex;justify-content:space-between;align-items:center;padding:20px 20px 8px}
+header small{font-size:11px;color:var(--mute);display:block}
+header strong{font-size:20px}
+.av{width:36px;height:36px;border-radius:18px;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700}
+main{flex:1;overflow-y:auto;padding:8px 20px 20px;display:flex;flex-direction:column;gap:12px}
+.c{background:#fff;border-radius:18px;padding:16px}
+.lab{font-size:12px;color:var(--mute)}
+.big{font-size:28px;font-weight:700}
+.row{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line);font-size:14px}
+.row i{width:9px;height:9px;border-radius:5px;background:var(--g);flex:none}
+.row i.n{background:var(--r)}
+.row span{flex:1}.row b{color:var(--g)}.row b.n{color:#B03225}
+.btn{width:100%;min-height:48px;border:0;border-radius:12px;background:var(--g);color:#fff;font-weight:700;font-size:15px;font-family:inherit;cursor:pointer}
+.btn.o{background:#fff;color:var(--g);border:1px solid var(--g)}
+.btn.t{background:transparent;color:var(--mute);font-weight:400;font-size:13px}
+.btn:disabled{opacity:.6;cursor:default}
+nav{display:flex;border-top:1px solid var(--line);background:#fff;padding-bottom:env(safe-area-inset-bottom,0px)}
+nav button{flex:1;min-height:56px;border:0;background:transparent;font-size:13px;font-family:inherit;color:var(--mute);cursor:pointer}
+nav button[aria-current="page"]{color:var(--g);font-weight:700;box-shadow:inset 0 3px 0 var(--g)}
+.opt{display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--line);border-radius:14px;cursor:pointer;background:#fff}
+.opt:has(input:checked){border-color:var(--g);background:#EEF7F0}
+.opt input{accent-color:var(--g);width:20px;height:20px}
+.opt b{display:block;font-size:15px}.opt small{color:var(--mute);font-size:12px}
+.ov{position:absolute;inset:0;background:rgba(18,38,28,.55);display:flex;align-items:flex-end;z-index:5}
+.sheet{background:#FFF4E5;border-radius:24px 24px 0 0;padding:22px 20px calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;width:100%;font-size:14px;line-height:1.65}
+.sheet h3{margin:0;font-size:17px;color:#8A4B00}
+.bar{height:10px;border-radius:5px}
+.toast{position:absolute;left:20px;right:20px;bottom:76px;background:var(--gd);color:#fff;border-radius:12px;padding:12px 16px;font-size:14px;z-index:6}
+.ok{background:var(--g);color:#fff}
+.rs{border:1px solid #C9D6CB;background:#fff;color:var(--mute);border-radius:16px;font-size:12px;font-family:inherit;padding:6px 10px;min-height:32px;margin-right:8px;cursor:pointer}
+.push{position:absolute;left:12px;right:12px;top:calc(12px + env(safe-area-inset-top,0px));background:#12261C;color:#fff;border-radius:16px;padding:14px 16px;z-index:7;font-size:13px;line-height:1.6;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.chip{flex:1;min-height:44px;border:1.5px solid var(--line);border-radius:12px;background:#fff;font-weight:700;font-size:14px;font-family:inherit;color:var(--gd);cursor:pointer}
+.chip[aria-pressed="true"]{border-color:var(--g);background:#EEF7F0;color:var(--g)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<header><div><small>DAWHO · Seedling 萌芽專區</small><strong id="ttl"></strong></div><div style="display:flex;align-items:center"><button class="rs" data-a="reset">重置示範</button><div class="av" aria-hidden="true">芽</div></div></header>
+<main id="main"></main>
+<nav id="nav"></nav>
+<div id="layer"></div>
+</div>
+<script>
+function init(){return {tab:0,score:735,choice:'full',paid:false,offer:'idle',claimed:false,modal:false,toast:'',pledged:false,amt:10000,push:false,
+feed:[["+20","卡費全額自動扣繳成功"],["+10","電信費代扣無逾期"],["−8","月底存款水位警戒"],["+12","學雜費準時繳納"]]}}
+var S=init();
+var TABS=[["開通","質押開通"],["儀表板","個人信用儀表板"],["帳單","本期帳單 · AI 守護"],["升級","新鮮人啟航升級"]];
+var $=function(i){return document.getElementById(i)};
+function pct(){return Math.max(0,Math.min(100,Math.round(78+(S.score-735)*0.5)))}
+function dash(){return Math.round(283*(S.score-300)/550)}
+function label(){return S.score>=700?"信用極佳":S.score>=650?"信用良好":"信用待加強"}
+function fm(n){return n.toLocaleString("en-US")}
+function B(){return Math.round(S.amt*0.75)}
+function I(){return Math.round(B()*0.18)}
+function pledge(){
+  var lim=S.amt*0.8;
+  if(S.pledged)return '<div class="c ok"><div style="font-weight:700">質押型微額信用卡已開通</div><div style="font-size:13px;margin-top:4px">每月全額準時繳款，良好紀錄將依法報送聯徵中心</div></div><div class="c" style="background:#12261C;color:#fff"><div style="font-size:12px;opacity:.8">DAWHO Secured Micro-Card</div><div class="big" style="margin-top:18px">NT$ '+fm(lim)+'</div><div style="font-size:12px;opacity:.8">信用額度 · 質押定存 NT$ '+fm(S.amt)+'（額度 80%）</div></div><div style="flex:1"></div><button class="btn" data-a="dash">前往信用儀表板</button>';
+  return '<div class="c"><div style="font-size:16px;font-weight:700">在學也能累積真實信用</div><p class="lab" style="line-height:1.7;font-size:13px">將活存轉為定存質押，即時核發質押金額 80% 的微額信用卡。每月準時全額繳清，紀錄依法報送聯徵中心。</p></div><div class="c"><div class="lab">選擇質押金額</div><div style="display:flex;gap:10px;margin-top:8px">'+[5000,10000].map(function(v){return '<button class="chip" data-a="amt" data-v="'+v+'" aria-pressed="'+(S.amt===v)+'">NT$ '+fm(v)+'</button>'}).join("")+'</div></div><div class="c"><div class="row" style="border:0;padding-top:0"><span>轉為定存質押</span><b style="color:#12261C">NT$ '+fm(S.amt)+'</b></div><div class="row"><span>核發信用額度（80%）</span><b>NT$ '+fm(lim)+'</b></div></div><div style="flex:1"></div><button class="btn" data-a="act">轉為定存質押並開通</button>';
+}
+function dash1(){
+  var rows=S.feed.map(function(f){var n=f[0].charAt(0)==="−";return '<div class="row"><i class="'+(n?'n':'')+'"></i><span>'+f[1]+'</span><b class="'+(n?'n':'')+'">'+f[0]+' 分</b></div>'}).join("");
+  return '<div class="c" style="text-align:center"><svg width="210" height="124" viewBox="0 0 220 130" role="img" aria-label="信用分數 '+S.score+' 分，'+label()+'"><path d="M20 120 A90 90 0 0 1 200 120" fill="none" stroke="#E1E9E0" stroke-width="16" stroke-linecap="round"/><path d="M20 120 A90 90 0 0 1 200 120" fill="none" stroke="#1F7A44" stroke-width="16" stroke-linecap="round" stroke-dasharray="'+dash()+' 283"/><text x="110" y="104" text-anchor="middle" font-size="44" font-weight="700" fill="#12261C">'+S.score+'</text></svg><div style="font-weight:700;color:#1F7A44">'+label()+'</div><div style="margin-top:12px;text-align:left"><div class="lab" style="display:flex;justify-content:space-between"><span>距離解鎖 10 萬正式大戶卡</span><span>'+pct()+'%</span></div><div style="height:8px;border-radius:4px;background:#E1E9E0;margin-top:6px"><div style="width:'+pct()+'%;height:8px;border-radius:4px;background:#1F7A44"></div></div></div></div><div class="c" style="padding-top:8px"><div style="font-weight:700;font-size:15px;padding:10px 0 6px">信用流水 Credit Activity Feed</div>'+rows+'</div>';
+}
+function bill(){
+  if(S.paid)return '<div class="c" style="text-align:center;padding:32px 20px"><div class="big" style="color:#1F7A44">本期已完成繳款</div><p class="lab" style="line-height:1.7">您的繳款結果已寫入信用流水，回到「儀表板」查看分數變化。</p><button class="btn o" data-a="dash">查看信用流水</button></div>';
+  var o=[["full","全額繳清（推薦）","NT$ '+fm(B())+' · 利息 0 元"],["inst","3 期 0 利率","每期 NT$ '+fm(Math.round(B()/3))+' · 利息 0 元"],["min","最低應繳","本期僅繳最低金額 · 產生循環利息"]].map(function(x){return '<label class="opt"><input type="radio" name="p" value="'+x[0]+'"'+(S.choice===x[0]?' checked':'')+'><span><b>'+x[1]+'</b><small>'+x[2]+'</small></span></label>'}).join("");
+  return '<div class="c"><div class="lab">本期應繳總額</div><div class="big">NT$ '+fm(B())+'</div><div class="lab">繳款截止日 3 天後 · AI 已設定到期前提醒</div></div><div style="display:flex;flex-direction:column;gap:10px">'+o+'</div><div style="flex:1"></div><button class="btn o" data-a="push">模擬：到期前 3 天 AI 推播提醒</button><button class="btn" data-a="pay">確認繳款</button>';
+}
+function up(){
+  if(S.offer==="idle")return '<div class="c"><div style="font-size:16px;font-weight:700">畢業了嗎？免薪轉直接升級</div><p class="lab" style="line-height:1.7;font-size:13px">上傳企業錄取聘書，系統會載入您的在學信用紀錄，免除 3 個月薪轉門檻。</p></div><div style="flex:1"></div><button class="btn" data-a="offer">上傳 Offer Letter（示範）</button>';
+  if(S.offer==="load")return '<div class="c" style="text-align:center;padding:40px 20px"><div class="big">檢驗中…</div><p class="lab">正在核對在學信用自律評分</p></div>';
+  return '<div class="c ok"><div style="font-weight:700">恭喜通過在學信用檢驗！</div><div style="font-size:13px;margin-top:4px">已為您解鎖以下方案</div></div><div class="c"><div class="lab">新鮮人啟步備用金</div><div class="big">NT$ 30,000</div><div style="font-size:13px;color:#1F7A44;font-weight:700">前 3 個月年利率 1.99% 起 · 免開辦費</div></div><div class="c"><div class="lab">正式大戶信用卡</div><div class="big">額度 NT$ 100,000</div><div style="font-size:13px;color:#4F6257">全額退還質押存單 · 免薪轉直升</div></div><div style="flex:1"></div><button class="btn" data-a="claim"'+(S.claimed?' disabled':'')+' style="background:#12261C">'+(S.claimed?'已領取（示範）':'立即領取')+'</button>';
+}
+function render(){
+  $("ttl").textContent=TABS[S.tab][1];
+  $("main").innerHTML=[pledge,dash1,bill,up][S.tab]();
+  $("nav").innerHTML=TABS.map(function(t,i){return '<button data-t="'+i+'"'+(i===S.tab?' aria-current="page"':'')+'>'+t[0]+'</button>'}).join("");
+  var L='';
+  if(S.modal)L+='<div class="ov"><div class="sheet" role="dialog" aria-label="AI 信用守門人提醒"><h3>AI 信用守門人提醒</h3><div>選擇「最低應繳」預計將產生 <b>'+fm(I())+' 元</b>循環利息，並使信用流水扣減 <b>15 分</b>。建議選擇「全額繳清」或「3 期 0 利率」。</div><div style="font-size:12px">全額繳清 · 利息 0 元</div><div class="bar" style="background:#1F7A44;width:4%"></div><div style="font-size:12px">最低應繳 · 利息 '+fm(I())+' 元</div><div class="bar" style="background:#C0392B;width:100%"></div><button class="btn" data-a="full" style="margin-top:6px">改選全額繳清</button><button class="btn t" data-a="keep">我了解，仍要最低應繳</button></div></div>';
+  if(S.push)L+='<div class="push" role="alert" data-a="gopay"><b>AI 信用守門人 · 帳單 3 天後到期</b><br>應繳 NT$ '+fm(B())+'，備付金水位充足。建議全額繳清，避免循環利息與信用扣分。</div>';
+  if(S.toast)L+='<div class="toast" role="status">'+S.toast+'</div>';
+  $("layer").innerHTML=L;
+}
+function add(p,t){S.feed.unshift([p,t]);S.score+=parseInt(p.replace("−","-"),10)}
+function toast(t){S.toast=t;render();setTimeout(function(){S.toast="";render()},2200)}
+document.addEventListener("change",function(e){if(e.target.name==="p"){S.choice=e.target.value;S.modal=S.choice==="min";render()}});
+document.addEventListener("click",function(e){
+  var b=e.target.closest("[data-t],[data-a]");if(!b)return;
+  if(b.dataset.t!==undefined){S.tab=+b.dataset.t;S.modal=false;render();return}
+  var a=b.dataset.a;
+  if(a==="dash"){S.tab=1;render()}
+  else if(a==="reset"){S=init();render()}
+  else if(a==="amt"){S.amt=+b.dataset.v;render()}
+  else if(a==="act"){S.pledged=true;toast("定存質押完成，微額信用卡已開通")}
+  else if(a==="push"){S.push=true;render();setTimeout(function(){if(S.push){S.push=false;render()}},7000)}
+  else if(a==="gopay"){S.push=false;S.tab=2;render()}
+  else if(a==="full"){S.choice="full";S.modal=false;render()}
+  else if(a==="keep"){S.modal=false;render()}
+  else if(a==="pay"){
+    if(S.choice==="full")add("+20","卡費全額繳清成功");
+    else if(S.choice==="inst")add("+5","3 期 0 利率分期，無循環利息");
+    else add("−15","選擇最低應繳，產生循環利息");
+    S.paid=true;render()}
+  else if(a==="offer"){S.offer="load";render();setTimeout(function(){S.offer="done";render()},1400)}
+  else if(a==="claim"){S.claimed=true;toast("已送出領取申請（示範）")}
+});
+render();
+</script>
+</body>
+</html>
